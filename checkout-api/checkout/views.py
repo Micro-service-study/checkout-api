@@ -3,9 +3,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from .api.serializers import OrderSerializer
 from .kafka.producer.producer import brokerProducer
+from .kafka.consumer.consumer import consumerGet
 
-@api_view(['POST'])
+@api_view(['POST', 'GET'])
 def checkout(request):
+  if request.method == 'GET':
+    consumerGet()
+    return Response(status=status.HTTP_200_OK)
   if request.method == 'POST':
     serialize = OrderSerializer(data=request.data)
     serialize.is_valid(raise_exception=True)
